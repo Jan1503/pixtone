@@ -2,14 +2,14 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Vap1;
+namespace PixTone;
 
 /// <summary>
-///     Sends VAP1 datagrams to one board. The caller feeds 48 kHz stereo s16le.
+///     Sends PixTone datagrams to one board. The caller feeds 48 kHz stereo s16le.
 ///     Packet n is due at the first send plus n × 7.5 ms. A late wakeup does not move
 ///     that schedule, so the average rate stays 48 kHz instead of slowing down.
 /// </summary>
-public sealed class Vap1Sender : IDisposable
+public sealed class PixToneSender : IDisposable
 {
     private readonly UdpClient _udp = new();
     private readonly System.Net.IPEndPoint _remote;
@@ -61,18 +61,18 @@ public sealed class Vap1Sender : IDisposable
     private TimeSpan? _origin;
     private int _sent;
 
-    public Vap1Sender(string host, int port = Vap1Protocol.Port)
+    public PixToneSender(string host, int port = PixToneProtocol.Port)
     {
-        _remote = Vap1Protocol.Endpoint(host, port);
+        _remote = PixToneProtocol.Endpoint(host, port);
     }
 
-    public void SetVolume(int volumePercent, bool mute) => Send(Vap1Protocol.VolumePacket(volumePercent, mute));
+    public void SetVolume(int volumePercent, bool mute) => Send(PixToneProtocol.VolumePacket(volumePercent, mute));
 
-    public void SetTitle(string? title) => Send(Vap1Protocol.TitlePacket(title));
+    public void SetTitle(string? title) => Send(PixToneProtocol.TitlePacket(title));
 
     public async Task PumpAsync(Stream pcm, CancellationToken ct = default, Action? onFirstPacket = null)
     {
-        var packet = new byte[Vap1Protocol.PcmBytes];
+        var packet = new byte[PixToneProtocol.PcmBytes];
         TimeSpan? origin = null;
             var sent = 0;
             while (!ct.IsCancellationRequested)
@@ -98,7 +98,7 @@ public sealed class Vap1Sender : IDisposable
                     continue;
                 }
 
-                var due = origin.Value + TimeSpan.FromMilliseconds(sent * Vap1Protocol.PacketMs);
+                var due = origin.Value + TimeSpan.FromMilliseconds(sent * PixToneProtocol.PacketMs);
                 if (MediaNow < due)
                     await WaitUntil(due, ct).ConfigureAwait(false);
                 while (IsHeld)
@@ -120,7 +120,7 @@ public sealed class Vap1Sender : IDisposable
             return;
         }
 
-        var due = _origin.Value + TimeSpan.FromMilliseconds(_sent * Vap1Protocol.PacketMs);
+        var due = _origin.Value + TimeSpan.FromMilliseconds(_sent * PixToneProtocol.PacketMs);
         while (MediaNow < due)
         {
             if (IsHeld) { Thread.Sleep(20); continue; }
@@ -154,10 +154,10 @@ public sealed class Vap1Sender : IDisposable
 
     private void SendPcm(ReadOnlySpan<byte> pcm)
     {
-        var flags = _discontinuity ? Vap1Protocol.FlagDiscontinuity : (ushort)0;
+        var flags = _discontinuity ? PixToneProtocol.FlagDiscontinuity : (ushort)0;
         _discontinuity = false;
         var frames = (uint)(pcm.Length / 4);
-        Send(Vap1Protocol.AudioPacket(_seq++, _sampleIndex, flags, pcm));
+        Send(PixToneProtocol.AudioPacket(_seq++, _sampleIndex, flags, pcm));
         _sampleIndex += frames;
     }
 

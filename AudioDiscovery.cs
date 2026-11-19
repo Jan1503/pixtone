@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 
-namespace Vap1;
+namespace PixTone;
 
 /// <summary>One audio board, from its HTTP <c>/status</c> page on port 5000.</summary>
 public sealed class AudioAnnouncement
@@ -14,8 +14,8 @@ public sealed class AudioAnnouncement
     public string Host { get; init; } = "";
     public string Name { get; init; } = "";
     public string Version { get; init; } = "";
-    public int UdpPort { get; init; } = Vap1Protocol.Port;
-    public int WebPort { get; init; } = Vap1Protocol.WebPort;
+    public int UdpPort { get; init; } = PixToneProtocol.Port;
+    public int WebPort { get; init; } = PixToneProtocol.WebPort;
     public int Volume { get; init; }
     public bool Muted { get; init; }
     public string Via { get; init; } = "";
@@ -26,7 +26,7 @@ public sealed class AudioAnnouncement
 /// <summary>Finds audio boards the same way PixPlane finds panels: GET /status on port 5000.</summary>
 public static class AudioDiscovery
 {
-    public static async Task<AudioAnnouncement?> QueryStatusAsync(string host, int webPort = Vap1Protocol.WebPort,
+    public static async Task<AudioAnnouncement?> QueryStatusAsync(string host, int webPort = PixToneProtocol.WebPort,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(host)) return null;
@@ -60,7 +60,7 @@ public static class AudioDiscovery
             {
                 try
                 {
-                    using var resp = await http.GetAsync($"http://{ip}:{Vap1Protocol.WebPort}/status", token)
+                    using var resp = await http.GetAsync($"http://{ip}:{PixToneProtocol.WebPort}/status", token)
                         .ConfigureAwait(false);
                     if (!resp.IsSuccessStatusCode) return;
                     var body = await resp.Content.ReadAsStringAsync(token).ConfigureAwait(false);
@@ -93,8 +93,8 @@ public static class AudioDiscovery
                 Host = ip,
                 Name = Str(r, "host"),
                 Version = Str(r, "ver"),
-                UdpPort = Int(r, "udp", Vap1Protocol.Port),
-                WebPort = Int(r, "web", Vap1Protocol.WebPort),
+                UdpPort = Int(r, "udp", PixToneProtocol.Port),
+                WebPort = Int(r, "web", PixToneProtocol.WebPort),
                 Volume = Int(r, "vol", 70),
                 Muted = Int(r, "mute", 0) != 0,
                 Via = via

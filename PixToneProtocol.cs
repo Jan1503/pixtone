@@ -2,10 +2,10 @@ using System.Buffers.Binary;
 using System.Net;
 using System.Text;
 
-namespace Vap1;
+namespace PixTone;
 
-/// <summary>VAP1 on UDP 7779. One datagram is 7.5 ms of 48 kHz stereo s16le.</summary>
-public static class Vap1Protocol
+/// <summary>PixTone on UDP 7779. One datagram is 7.5 ms of 48 kHz stereo s16le.</summary>
+public static class PixToneProtocol
 {
     public const int Port = 7779;
     public const int WebPort = 5000;
@@ -14,7 +14,7 @@ public static class Vap1Protocol
     public const int PcmBytes = FramesPerPacket * 4;
     public const double PacketMs = 1000.0 * FramesPerPacket / 48000.0;
 
-    public const uint Magic = 0x31504156;       // 'VAP1'
+    public const uint Magic = 0x4E4F5450;       // 'PTON'
     public const uint MagicVolume = 0x4C4F5656; // 'VVOL'
     public const uint MagicTitle = 0x54495456;  // 'VTIT'
     public const ushort FlagDiscontinuity = 0x0001;

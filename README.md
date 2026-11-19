@@ -1,4 +1,4 @@
-# VAP1
+# PixTone
 
 Host-side sender for a verpixeld audio board. The library does not start FFmpeg and has no UI. The host feeds 48 kHz stereo s16le; this paces it onto UDP.
 
@@ -8,7 +8,7 @@ One datagram is 7.5 ms:
 
 | Field | Type |
 |-------|------|
-| magic | `VAP1` |
+| magic | `PTON` |
 | sequence | u32 |
 | sample index | u32 |
 | flags | u16, bit 0 = discontinuity |
@@ -18,13 +18,13 @@ One datagram is 7.5 ms:
 `VVOL` sets volume 0–100 and mute. `VTIT` sets a short title. The board answers every 100 ms with fill level, underruns and overruns. Packet *n* is due at the first send plus *n* × 7.5 ms, so a late wakeup does not slow the stream down. `PauseClock` freezes that schedule while a movie is paused.
 
 ```powershell
-dotnet build Vap1.csproj -c Release
+dotnet build PixTone.csproj -c Release
 ```
 
-verpixeld references this project as a sibling (`../vap1`). Clone it next to `verpixeld` and `pixplane`:
+verpixeld references this project as a sibling (`../pixtone`). Clone it next to `verpixeld` and `pixplane`:
 
 ```bash
-git clone https://github.com/Jan1503/vap1.git vap1
+git clone https://github.com/Jan1503/pixtone.git pixtone
 ```
 
 ## License

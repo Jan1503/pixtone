@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>Vap1</AssemblyName>
+    <RootNamespace>Vap1</RootNamespace>
+    <Authors>Jan Wrage</Authors>
+    <Description>Host-side sender for the verpixeld audio board: s16le 48 kHz stereo to paced VAP1 UDP. No UI or FFmpeg dependency.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+</Project>

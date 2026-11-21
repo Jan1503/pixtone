@@ -70,6 +70,8 @@ public sealed class PixToneSender : IDisposable
 
     public void SetTitle(string? title) => Send(PixToneProtocol.TitlePacket(title));
 
+    public void SendControl(byte[] datagram) => Send(datagram);
+
     public async Task PumpAsync(Stream pcm, CancellationToken ct = default, Action? onFirstPacket = null)
     {
         var packet = new byte[PixToneProtocol.PcmBytes];

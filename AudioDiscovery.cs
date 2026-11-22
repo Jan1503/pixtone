@@ -16,8 +16,12 @@ public sealed class AudioAnnouncement
     public string Version { get; init; } = "";
     public int UdpPort { get; init; } = PixToneProtocol.Port;
     public int WebPort { get; init; } = PixToneProtocol.WebPort;
+    /// <summary>UDP port for <c>VPIC</c>. 0 means the board takes the preview on <see cref="UdpPort"/>.</summary>
+    public int PicturePort { get; init; }
     public int Volume { get; init; }
     public bool Muted { get; init; }
+    /// <summary>Seconds since the board started ("up"); a smaller value than before means it restarted.</summary>
+    public int Uptime { get; init; }
     public string Via { get; init; } = "";
 
     public string DisplayName => string.IsNullOrWhiteSpace(Name) ? Host : Name;
@@ -95,8 +99,10 @@ public static class AudioDiscovery
                 Version = Str(r, "ver"),
                 UdpPort = Int(r, "udp", PixToneProtocol.Port),
                 WebPort = Int(r, "web", PixToneProtocol.WebPort),
+                PicturePort = Int(r, "pic", 0),
                 Volume = Int(r, "vol", 70),
                 Muted = Int(r, "mute", 0) != 0,
+                Uptime = Int(r, "up", 0),
                 Via = via
             };
             return !string.IsNullOrEmpty(board.Host);

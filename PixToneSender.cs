@@ -72,6 +72,16 @@ public sealed class PixToneSender : IDisposable
 
     public void SendControl(byte[] datagram) => Send(datagram);
 
+    /// <summary>
+    ///     Waits for a datagram from the board (for example <c>VKEY</c>). Call it only after a
+    ///     first send, which binds the local port; the board answers to that port.
+    /// </summary>
+    public async Task<byte[]> ReceiveAsync(CancellationToken ct = default)
+    {
+        var r = await _udp.ReceiveAsync(ct).ConfigureAwait(false);
+        return r.Buffer;
+    }
+
     public async Task PumpAsync(Stream pcm, CancellationToken ct = default, Action? onFirstPacket = null)
     {
         var packet = new byte[PixToneProtocol.PcmBytes];
